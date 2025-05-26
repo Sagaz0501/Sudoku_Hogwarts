@@ -2,7 +2,7 @@ body {
   font-family: 'Garamond', serif;
   text-align: center;
   padding: 20px;
-  background-image: url(../img/bacground.jpg);
+  background-image: url(/Sudoku_Hogwarts/img/background.jpg);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
