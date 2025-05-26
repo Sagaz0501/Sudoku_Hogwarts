@@ -54,55 +54,53 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    function createTableRow(name, levels, points) {
+    function createTableRow(name, classroom, levels, points) {
       return `
         <tr>
           <td>${name}</td>
+          <td>${classroom}</td>
           <td>${levels.join(", ")}</td>
           <td>${points}</td>
         </tr>
       `;
     }
 
-    function createClassroomSection(classroom, rowsHtml) {
-      return `
-        <h2 class="class-title">Classroom ${classroom}</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Levels Completed</th>
-              <th>Total Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-          </tbody>
-        </table>
-      `;
-    }
-
     window.addEventListener('DOMContentLoaded', async () => {
-      const tableContainer = document.getElementById('admin-results');
+      const container = document.getElementById('admin-results');
       const snapshot = await getDocs(collection(db, "students"));
 
       const grouped = {};
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        if (!grouped[data.classroom]) grouped[data.classroom] = [];
-        grouped[data.classroom].push(data);
+        const classroom = data.classroom || 'Unknown';
+        if (!grouped[classroom]) grouped[classroom] = [];
+        grouped[classroom].push(data);
       });
 
-      const sortedClasses = Object.keys(grouped).sort();
-      tableContainer.innerHTML = '';
+      const sortedClassrooms = Object.keys(grouped).sort();
+      container.innerHTML = '';
 
-      sortedClasses.forEach(classroom => {
-        const rowsHtml = grouped[classroom]
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map(data => createTableRow(data.name, data.levels, data.points))
-          .join("");
-        tableContainer.innerHTML += createClassroomSection(classroom, rowsHtml);
+      sortedClassrooms.forEach(classroom => {
+        const students = grouped[classroom].sort((a, b) => a.name.localeCompare(b.name));
+        const rows = students.map(s => createTableRow(s.name, s.classroom, s.levels || [], s.points || 0)).join('');
+
+        container.innerHTML += `
+          <h2 class="class-title">Classroom ${classroom}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Classroom</th>
+                <th>Levels Completed</th>
+                <th>Total Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        `;
       });
     });
   </script>
