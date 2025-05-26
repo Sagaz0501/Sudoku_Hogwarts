@@ -1,9 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hogwarts Admin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Hogwarts Scores</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #2e2e3f;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #6a1b9a;
+    }
+    h1 {
+      color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Hogwarts Students' Spellwork Results</h1>
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Classroom</th>
+        <th>Levels Completed</th>
+        <th>Total Points</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -20,73 +59,24 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.onload = async () => {
-      const password = prompt("Enter admin password:");
-      if (password !== "hogwarts2024") {
-        alert("Incorrect password.");
-        document.body.innerHTML = "<h2>Access Denied</h2>";
-        return;
-      }
+    async function loadResults() {
+      const tableBody = document.querySelector("#resultsTable tbody");
+      const querySnapshot = await getDocs(collection(db, "students"));
 
-      const table = document.getElementById('results');
-      const snapshot = await getDocs(collection(db, "students"));
-      const grouped = {};
-
-      snapshot.forEach(doc => {
+      querySnapshot.forEach((doc) => {
         const data = doc.data();
-        if (!grouped[data.classroom]) grouped[data.classroom] = [];
-        grouped[data.classroom].push(data);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.name}</td>
+          <td>${data.classroom}</td>
+          <td>${data.levels.join(', ')}</td>
+          <td>${data.points}</td>
+        `;
+        tableBody.appendChild(tr);
       });
-
-      for (const classroom of Object.keys(grouped).sort()) {
-        const header = document.createElement('h2');
-        header.textContent = `Classroom ${classroom}`;
-        table.appendChild(header);
-
-        const tableEl = document.createElement('table');
-        tableEl.border = 1;
-        tableEl.innerHTML = `<tr><th>Name</th><th>Levels</th><th>Points</th></tr>`;
-
-        grouped[classroom].forEach(student => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${student.name}</td>
-            <td>${student.levels.join(", ")}</td>
-            <td>${student.points}</td>
-          `;
-          tableEl.appendChild(row);
-        });
-
-        table.appendChild(tableEl);
-      }
     }
+
+    loadResults();
   </script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #fdfdfd;
-    }
-    h1 {
-      color: #ae0001;
-    }
-    table {
-      width: 100%;
-      margin-bottom: 30px;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-    th {
-      background: #ffe8b0;
-    }
-  </style>
-</head>
-<body>
-  <h1>Hogwarts Student Points Overview</h1>
-  <div id="results"></div>
 </body>
 </html>
