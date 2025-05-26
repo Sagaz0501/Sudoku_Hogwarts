@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name=author content="Santiago Bernal">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./script/script.js"></script>
+    <title>Sudoku Feria Matematica</title>
+</head>
+
+<body>
+    <h1>🧙‍♂️ Welcome to Hogwarts Sudoku 🧩</h1>
+    <label for="difficulty">Choose your wizarding challenge:</label>
+    <select id="difficulty" onchange="generateSudoku()">
+        <option value="easy" selected>First Year Spell (Easy - 4x4)</option>
+        <option value="medium">O.W.L Level Puzzle (Medium - 9x9)</option>
+        <option value="hard">N.E.W.T Level Test (Hard - 9x9)</option>
+    </select>
+
+    <div id="sudoku-container"></div>
+
+    <button onclick="checkSolution()">Cast Validation Spell 🪄</button>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+body {
+  font-family: 'Garamond', serif;
+  text-align: center;
+  padding: 20px;
+  background-image: url(/img/bacground.jpg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #f2e9dc;
+}
+
+select, button {
+  margin: 10px;
+  padding: 10px 14px;
+  border: 1px solid #e2d6b9;
+  border-radius: 5px;
+  background-color: rgba(30, 30, 30, 0.6);
+  color: #f2e9dc;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+select:hover, button:hover {
+  background-color: rgba(50, 50, 50, 0.7);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+label{
+    font-size: 30px;
+    color: #f2e9dc;
+}
+#sudoku-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.grid {
+  display: grid;
+  gap: 3px;
+  border: 3px solid #ccc;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.grid input {
+  width: 42px;
+  height: 42px;
+  text-align: center;
+  font-size: 18px;
+  border: 1px solid #bbb;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #222;
+  border-radius: 4px;
+}
+
+.grid input::-webkit-inner-spin-button,
+.grid input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.grid input:hover {
+  border-color: #ffc107;
+  box-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
+}
+
+.grid input:focus {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+}
+
+.grid input[disabled] {
+  background-color: rgba(255, 255, 255, 0.6);
+  font-weight: bold;
+  color: #444;
+  box-shadow: none;
+}
+
+.thick-border-top {
+  border-top: 3px solid #000 !important;
+}
+
+.thick-border-left {
+  border-left: 3px solid #000 !important;
+}
+
+ @media (max-width: 480px) {
+      h1 {
+        font-size: 1.4em;
+      }
+      select, button {
+        width: 100%;
+        font-size: 0.95em;
+      }
+      .grid {
+        justify-content: center;
+        max-width: 100%;
+        gap: 2px;
+      }
+      .grid input {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85em;
+      }
+    }
