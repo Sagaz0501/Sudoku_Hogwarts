@@ -11,10 +11,15 @@
       color: #fff;
       padding: 20px;
     }
+    .class-title {
+      color: #ffc107;
+      margin-top: 40px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #2e2e3f;
+      margin-bottom: 30px;
     }
     th, td {
       border: 1px solid #444;
@@ -31,85 +36,75 @@
 </head>
 <body>
   <h1>📊 Hogwarts Students' Spellwork Results</h1>
-  <table id="resultsTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Classroom</th>
-        <th>Levels Completed</th>
-        <th>Total Points</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="admin-results"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDa7ZFUAwbJtTlrUe0fSMmHr1iM-dyHZaQ",
-  authDomain: "howarts-formulario.firebaseapp.com",
-  projectId: "howarts-formulario",
-  storageBucket: "howarts-formulario.firebasestorage.app",
-  messagingSenderId: "897432828435",
-  appId: "1:897432828435:web:c2922b0e9eb1de71cddde6"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDa7ZFUAwbJtTlrUe0fSMmHr1iM-dyHZaQ",
+      authDomain: "howarts-formulario.firebaseapp.com",
+      projectId: "howarts-formulario",
+      storageBucket: "howarts-formulario.firebasestorage.app",
+      messagingSenderId: "897432828435",
+      appId: "1:897432828435:web:c2922b0e9eb1de71cddde6"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-function createTableRow(name, levels, points) {
-  return `
-    <tr>
-      <td>${name}</td>
-      <td>${levels.join(", ")}</td>
-      <td>${points}</td>
-    </tr>
-  `;
-}
-
-function createClassroomSection(classroom, rowsHtml) {
-  return `
-    <h2 class="class-title">Classroom ${classroom}</h2>
-    <table>
-      <thead>
+    function createTableRow(name, levels, points) {
+      return `
         <tr>
-          <th>Name</th>
-          <th>Levels Completed</th>
-          <th>Total Points</th>
+          <td>${name}</td>
+          <td>${levels.join(", ")}</td>
+          <td>${points}</td>
         </tr>
-      </thead>
-      <tbody>
-        ${rowsHtml}
-      </tbody>
-    </table>
-  `;
-}
+      `;
+    }
 
-window.addEventListener('DOMContentLoaded', async () => {
-  const tableContainer = document.getElementById('admin-results');
-  const snapshot = await getDocs(collection(db, "students"));
+    function createClassroomSection(classroom, rowsHtml) {
+      return `
+        <h2 class="class-title">Classroom ${classroom}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Levels Completed</th>
+              <th>Total Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      `;
+    }
 
-  const grouped = {};
+    window.addEventListener('DOMContentLoaded', async () => {
+      const tableContainer = document.getElementById('admin-results');
+      const snapshot = await getDocs(collection(db, "students"));
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (!grouped[data.classroom]) grouped[data.classroom] = [];
-    grouped[data.classroom].push(data);
-  });
+      const grouped = {};
 
-  const sortedClasses = Object.keys(grouped).sort();
-  tableContainer.innerHTML = '';
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (!grouped[data.classroom]) grouped[data.classroom] = [];
+        grouped[data.classroom].push(data);
+      });
 
-  sortedClasses.forEach(classroom => {
-    const rowsHtml = grouped[classroom]
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(data => createTableRow(data.name, data.levels, data.points))
-      .join("");
-    tableContainer.innerHTML += createClassroomSection(classroom, rowsHtml);
-  });
-});
+      const sortedClasses = Object.keys(grouped).sort();
+      tableContainer.innerHTML = '';
+
+      sortedClasses.forEach(classroom => {
+        const rowsHtml = grouped[classroom]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(data => createTableRow(data.name, data.levels, data.points))
+          .join("");
+        tableContainer.innerHTML += createClassroomSection(classroom, rowsHtml);
+      });
+    });
   </script>
 </body>
 </html>
